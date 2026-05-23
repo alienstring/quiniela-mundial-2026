@@ -42,7 +42,7 @@ custom_css = """
         width: 1px !important;
         height: 1px !important;
         opacity: 0 !important;
-        pointer-events: none !important;
+        pointer-events: auto !important;
     }
     
     [data-testid="stDecoration"] {
@@ -221,14 +221,43 @@ custom_css = """
     }
 </style>
 <div id="custom-sidebar-toggle" onclick="
-    let btn = document.querySelector('[data-testid=\'stSidebarCollapseButton\']') || 
-              document.querySelector('[data-testid=\'collapsedControl\'] button') || 
-              document.querySelector('[data-testid=\'collapsedControl\']') ||
-              document.querySelector('.st-emotion-cache-15x5g63') ||
-              document.querySelector('.st-emotion-cache-1h9z78m') ||
-              document.querySelector('.st-emotion-cache-1wfux4e') ||
-              document.querySelector('.st-emotion-cache-1d9g9g8');
-    if (btn) { btn.click(); }
+    let selectors = [
+        '[data-testid=\'stSidebarCollapseButton\']',
+        '[data-testid=\'collapsedControl\'] button',
+        '[data-testid=\'collapsedControl\']',
+        '.stSidebarCollapseButton',
+        'button[aria-label=\'Expand sidebar\']',
+        'button[aria-label=\'Collapse sidebar\']',
+        'button[aria-label=\'Close sidebar\']',
+        '.st-emotion-cache-15x5g63',
+        '.st-emotion-cache-1h9z78m',
+        '.st-emotion-cache-1wfux4e',
+        '.st-emotion-cache-1d9g9g8'
+    ];
+    let clicked = false;
+    for (let sel of selectors) {
+        let el = document.querySelector(sel);
+        if (el) {
+            try { el.click(); } catch(e) {}
+            try { el.dispatchEvent(new MouseEvent('click', {view: window, bubbles: true, cancelable: true})); } catch(e) {}
+            clicked = true;
+            break;
+        }
+    }
+    if (!clicked) {
+        let buttons = document.querySelectorAll('button');
+        for (let btn of buttons) {
+            let label = (btn.getAttribute('aria-label') || '').toLowerCase();
+            let html = btn.innerHTML.toLowerCase();
+            if (label.includes('sidebar') || label.includes('barra') || label.includes('menú') || label.includes('menu') || html.includes('chevron') || btn.querySelector('svg')) {
+                if (btn.id !== 'custom-sidebar-toggle' && !btn.closest('#custom-sidebar-toggle')) {
+                    try { btn.click(); } catch(e) {}
+                    try { btn.dispatchEvent(new MouseEvent('click', {view: window, bubbles: true, cancelable: true})); } catch(e) {}
+                    break;
+                }
+            }
+        }
+    }
 " style="
     position: fixed;
     left: 20px;
