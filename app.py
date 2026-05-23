@@ -33,7 +33,8 @@ custom_css = """
     }
     
     /* Botón flotante circular premium para reabrir el menú lateral (>>), visible siempre */
-    [data-testid="collapsedControl"] {
+    [data-testid="collapsedControl"],
+    [data-testid="stHeader"] [data-testid="stSidebarCollapseButton"] {
         display: flex !important;
         background-color: #1E293B !important;
         border-radius: 50% !important;
@@ -51,13 +52,15 @@ custom_css = """
         cursor: pointer !important;
     }
     
-    [data-testid="collapsedControl"]:hover {
+    [data-testid="collapsedControl"]:hover,
+    [data-testid="stHeader"] [data-testid="stSidebarCollapseButton"]:hover {
         transform: scale(1.1) !important;
         background-color: #0F172A !important;
         border-color: rgba(255, 215, 0, 0.8) !important;
     }
     
-    [data-testid="collapsedControl"] button {
+    [data-testid="collapsedControl"] button,
+    [data-testid="stHeader"] [data-testid="stSidebarCollapseButton"] button {
         background: transparent !important;
         border: none !important;
         width: 100% !important;
@@ -68,7 +71,8 @@ custom_css = """
         color: #FFD700 !important;
     }
     
-    [data-testid="collapsedControl"] svg {
+    [data-testid="collapsedControl"] svg,
+    [data-testid="stHeader"] [data-testid="stSidebarCollapseButton"] svg {
         fill: #FFD700 !important;
         color: #FFD700 !important;
         width: 28px !important;
