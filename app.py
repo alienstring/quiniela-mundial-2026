@@ -29,14 +29,25 @@ custom_css = """
         display: none !important;
     }
     
-    /* Forzar modo oscuro premium en toda la app, previniendo temas claros del celular */
-    html, body, [data-testid="stAppViewContainer"], .stApp, .main, [data-testid="stMain"] {
+    /* Forzar modo oscuro absoluto en cada capa y contenedor del cuerpo principal */
+    html, body, .stApp, 
+    [data-testid="stAppViewContainer"], 
+    [data-testid="stMain"], 
+    .main, 
+    [data-testid="stAppViewBlockContainer"], 
+    .block-container,
+    [data-testid="stVerticalBlock"] {
         background-color: #0E1117 !important;
+        background: #0E1117 !important;
         color: #F8FAFC !important;
     }
     
-    [data-testid="stSidebar"] {
+    /* Forzar modo oscuro absoluto en la barra lateral */
+    [data-testid="stSidebar"], 
+    [data-testid="stSidebarUserContent"], 
+    .stSidebar {
         background-color: #1E293B !important;
+        background: #1E293B !important;
         color: #F8FAFC !important;
     }
     
