@@ -32,51 +32,17 @@ custom_css = """
         display: none !important;
     }
     
-    /* Botón flotante circular premium para reabrir el menú lateral (>>), visible siempre */
+    /* Mover los controles nativos de la barra lateral fuera de la pantalla (pero dejándolos activos en el DOM para clics de JS) */
     [data-testid="collapsedControl"],
-    [data-testid="stHeader"] [data-testid="stSidebarCollapseButton"] {
-        display: flex !important;
-        background-color: #1E293B !important;
-        border-radius: 50% !important;
-        border: 2px solid rgba(255, 215, 0, 0.4) !important;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.5) !important;
+    [data-testid="stSidebarCollapseButton"],
+    .stSidebarCollapseButton {
         position: fixed !important;
-        left: 20px !important;
-        top: 20px !important;
-        z-index: 999999 !important;
-        width: 48px !important;
-        height: 48px !important;
-        align-items: center !important;
-        justify-content: center !important;
-        transition: all 0.3s ease !important;
-        cursor: pointer !important;
-    }
-    
-    [data-testid="collapsedControl"]:hover,
-    [data-testid="stHeader"] [data-testid="stSidebarCollapseButton"]:hover {
-        transform: scale(1.1) !important;
-        background-color: #0F172A !important;
-        border-color: rgba(255, 215, 0, 0.8) !important;
-    }
-    
-    [data-testid="collapsedControl"] button,
-    [data-testid="stHeader"] [data-testid="stSidebarCollapseButton"] button {
-        background: transparent !important;
-        border: none !important;
-        width: 100% !important;
-        height: 100% !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        color: #FFD700 !important;
-    }
-    
-    [data-testid="collapsedControl"] svg,
-    [data-testid="stHeader"] [data-testid="stSidebarCollapseButton"] svg {
-        fill: #FFD700 !important;
-        color: #FFD700 !important;
-        width: 28px !important;
-        height: 28px !important;
+        left: -999px !important;
+        top: -999px !important;
+        width: 1px !important;
+        height: 1px !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
     }
     
     [data-testid="stDecoration"] {
@@ -254,6 +220,36 @@ custom_css = """
         box-shadow: 0 4px 10px rgba(0,0,0,0.2);
     }
 </style>
+<div id="custom-sidebar-toggle" onclick="
+    let btn = document.querySelector('[data-testid=\'stSidebarCollapseButton\']') || 
+              document.querySelector('[data-testid=\'collapsedControl\'] button') || 
+              document.querySelector('[data-testid=\'collapsedControl\']') ||
+              document.querySelector('.st-emotion-cache-15x5g63') ||
+              document.querySelector('.st-emotion-cache-1h9z78m') ||
+              document.querySelector('.st-emotion-cache-1wfux4e') ||
+              document.querySelector('.st-emotion-cache-1d9g9g8');
+    if (btn) { btn.click(); }
+" style="
+    position: fixed;
+    left: 20px;
+    top: 20px;
+    width: 48px;
+    height: 48px;
+    background-color: #1E293B;
+    border: 2px solid rgba(255, 215, 0, 0.7);
+    border-radius: 50%;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.6);
+    z-index: 99999999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+" onmouseover="this.style.transform='scale(1.1)'; this.style.borderColor='rgba(255, 215, 0, 0.9)';" onmouseout="this.style.transform='scale(1)'; this.style.borderColor='rgba(255, 215, 0, 0.7)';">
+    <svg viewBox="0 0 24 24" style="width: 24px; height: 24px; fill: #FFD700; display: block;">
+        <path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z"/>
+    </svg>
+</div>
 """
 st.markdown(custom_css, unsafe_allow_html=True)
 
