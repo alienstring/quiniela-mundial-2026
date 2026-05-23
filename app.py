@@ -585,40 +585,65 @@ if page == "🏆 Tablero Principal":
                     
                 rows.append({
                     "Participante": a["player_name"],
-                    "🚩 1": get_flag_url(a["team1_name"]),
-                    "Equipo 1": get_styled_team_name_only(a["team1_name"], a["team1_status"], a["team1_elim"]),
-                    "🚩 2": get_flag_url(a["team2_name"]),
-                    "Equipo 2": get_styled_team_name_only(a["team2_name"], a["team2_status"], a["team2_elim"]),
+                    "Equipo 1": get_styled_team_plain(a["team1_name"], a["team1_status"], a["team1_elim"]),
+                    "Equipo 2": get_styled_team_plain(a["team2_name"], a["team2_status"], a["team2_elim"]),
                     "Estado del Jugador": status_text,
                     "Premio / Situación": earnings
                 })
                 
-            df = pd.DataFrame(rows)
-            
-            def sort_key(row):
+            def get_sort_order(row):
                 if "🥇" in row["Estado del Jugador"]: return 0
                 if "🥈" in row["Estado del Jugador"]: return 1
                 if "🥉" in row["Estado del Jugador"]: return 2
                 if "🟢" in row["Estado del Jugador"]: return 3
                 return 4
                 
-            df["sort_order"] = df.apply(sort_key, axis=1)
-            df = df.sort_values("sort_order").drop(columns=["sort_order"])
+            sorted_rows = sorted(rows, key=get_sort_order)
             
-            st.dataframe(
-                df,
-                column_config={
-                    "Participante": st.column_config.TextColumn("Participante", width="medium"),
-                    "🚩 1": st.column_config.ImageColumn(" ", width="small"),
-                    "Equipo 1": st.column_config.TextColumn("Equipo 1", width="medium"),
-                    "🚩 2": st.column_config.ImageColumn(" ", width="small"),
-                    "Equipo 2": st.column_config.TextColumn("Equipo 2", width="medium"),
-                    "Estado del Jugador": st.column_config.TextColumn("Estado del Jugador", width="medium"),
-                    "Premio / Situación": st.column_config.TextColumn("Premio / Situación", width="large"),
-                },
-                hide_index=True,
-                use_container_width=True
-            )
+            table_html = """
+            <div style="overflow-x: auto; margin-top: 15px;">
+              <table style="width: 100%; border-collapse: collapse; background: rgba(30, 41, 59, 0.25); border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,0.06); font-family: 'Outfit', sans-serif;">
+                <thead>
+                  <tr style="background: rgba(15, 23, 42, 0.7); border-bottom: 1px solid rgba(255,255,255,0.08); color: #94A3B8; text-align: left; font-size: 0.95rem;">
+                    <th style="padding: 14px 16px; font-weight: 600;">Participante</th>
+                    <th style="padding: 14px 16px; font-weight: 600;">Selección 1</th>
+                    <th style="padding: 14px 16px; font-weight: 600;">Selección 2</th>
+                    <th style="padding: 14px 16px; font-weight: 600;">Estado</th>
+                    <th style="padding: 14px 16px; font-weight: 600;">Premio / Situación</th>
+                  </tr>
+                </thead>
+                <tbody style="color: #E2E8F0; font-size: 0.95rem;">
+            """
+            
+            for row in sorted_rows:
+                status_style = ""
+                if "🥇" in row["Estado del Jugador"]:
+                    status_style = "color: #FFD700; font-weight: bold;"
+                elif "🥈" in row["Estado del Jugador"]:
+                    status_style = "color: #E2E8F0; font-weight: bold;"
+                elif "🥉" in row["Estado del Jugador"]:
+                    status_style = "color: #CD7F32; font-weight: bold;"
+                elif "🟢" in row["Estado del Jugador"]:
+                    status_style = "color: #34D399; font-weight: bold;"
+                else:
+                    status_style = "color: #64748B; opacity: 0.8;"
+                    
+                table_html += f"""
+                  <tr style="border-bottom: 1px solid rgba(255,255,255,0.04); transition: background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.02)'" onmouseout="this.style.background='transparent'">
+                    <td style="padding: 14px 16px; font-weight: 600; color: #FFFFFF;">{row["Participante"]}</td>
+                    <td style="padding: 14px 16px;">{row["Equipo 1"]}</td>
+                    <td style="padding: 14px 16px;">{row["Equipo 2"]}</td>
+                    <td style="padding: 14px 16px; {status_style}">{row["Estado del Jugador"]}</td>
+                    <td style="padding: 14px 16px; color: #94A3B8;">{row["Premio / Situación"]}</td>
+                  </tr>
+                """
+                
+            table_html += """
+                </tbody>
+              </table>
+            </div>
+            """
+            st.markdown(table_html, unsafe_allow_html=True)
             
     # Tab 2: Elimination Bracket Tree
     with tab_bracket_view:
@@ -846,10 +871,12 @@ if page == "🏆 Tablero Principal":
                     t_name = t_stats["name"]
                     status, elim_round = team_status_map.get(t_id, ("Vivo", "N/A"))
                     
+                    flag_team = TEAM_FLAGS.get(t_name, t_name)
+                    styled_team = get_styled_team_name_only(flag_team, status, elim_round)
+                    
                     table_rows.append({
                         "Pos": idx,
-                        "🚩": get_flag_url(t_name),
-                        "Equipo": get_styled_team_name_only(t_name, status, elim_round),
+                        "Equipo": styled_team,
                         "PJ": t_stats["pj"],
                         "PG": t_stats["pg"],
                         "PE": t_stats["pe"],
@@ -860,25 +887,48 @@ if page == "🏆 Tablero Principal":
                         "PTS": t_stats["pts"]
                     })
                     
-                df_table = pd.DataFrame(table_rows)
-                st.dataframe(
-                    df_table,
-                    column_config={
-                        "Pos": st.column_config.NumberColumn("Pos", width="small"),
-                        "🚩": st.column_config.ImageColumn(" ", width="small"),
-                        "Equipo": st.column_config.TextColumn("Equipo", width="medium"),
-                        "PJ": st.column_config.NumberColumn("PJ", width="small"),
-                        "PG": st.column_config.NumberColumn("PG", width="small"),
-                        "PE": st.column_config.NumberColumn("PE", width="small"),
-                        "PP": st.column_config.NumberColumn("PP", width="small"),
-                        "GF": st.column_config.NumberColumn("GF", width="small"),
-                        "GC": st.column_config.NumberColumn("GC", width="small"),
-                        "GD": st.column_config.NumberColumn("GD", width="small"),
-                        "PTS": st.column_config.NumberColumn("PTS", width="small")
-                    },
-                    hide_index=True,
-                    use_container_width=True
-                )
+                group_table_html = """
+                <div style="overflow-x: auto; margin-top: 10px;">
+                  <table style="width: 100%; border-collapse: collapse; background: rgba(30, 41, 59, 0.25); border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,0.06); font-family: 'Outfit', sans-serif;">
+                    <thead>
+                      <tr style="background: rgba(15, 23, 42, 0.7); border-bottom: 1px solid rgba(255,255,255,0.08); color: #94A3B8; text-align: left; font-size: 0.9rem;">
+                        <th style="padding: 10px 12px; font-weight: 600; text-align: center; width: 40px;">Pos</th>
+                        <th style="padding: 10px 12px; font-weight: 600;">Equipo</th>
+                        <th style="padding: 10px 12px; font-weight: 600; text-align: center;">PJ</th>
+                        <th style="padding: 10px 12px; font-weight: 600; text-align: center;">G</th>
+                        <th style="padding: 10px 12px; font-weight: 600; text-align: center;">E</th>
+                        <th style="padding: 10px 12px; font-weight: 600; text-align: center;">P</th>
+                        <th style="padding: 10px 12px; font-weight: 600; text-align: center;">GF</th>
+                        <th style="padding: 10px 12px; font-weight: 600; text-align: center;">GC</th>
+                        <th style="padding: 10px 12px; font-weight: 600; text-align: center;">GD</th>
+                        <th style="padding: 10px 12px; font-weight: 600; text-align: center; color: #34D399;">PTS</th>
+                      </tr>
+                    </thead>
+                    <tbody style="color: #E2E8F0; font-size: 0.9rem;">
+                """
+                
+                for row in table_rows:
+                    group_table_html += f"""
+                      <tr style="border-bottom: 1px solid rgba(255,255,255,0.04); transition: background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.02)'" onmouseout="this.style.background='transparent'">
+                        <td style="padding: 10px 12px; text-align: center; font-weight: 600; color: #94A3B8;">{row["Pos"]}</td>
+                        <td style="padding: 10px 12px; font-weight: 600; color: #FFFFFF;">{row["Equipo"]}</td>
+                        <td style="padding: 10px 12px; text-align: center;">{row["PJ"]}</td>
+                        <td style="padding: 10px 12px; text-align: center;">{row["PG"]}</td>
+                        <td style="padding: 10px 12px; text-align: center;">{row["PE"]}</td>
+                        <td style="padding: 10px 12px; text-align: center;">{row["PP"]}</td>
+                        <td style="padding: 10px 12px; text-align: center;">{row["GF"]}</td>
+                        <td style="padding: 10px 12px; text-align: center;">{row["GC"]}</td>
+                        <td style="padding: 10px 12px; text-align: center; font-weight: 600; color: { '#34D399' if row['GD'] > 0 else ('#F87171' if row['GD'] < 0 else '#94A3B8') };">{ '+' if row['GD'] > 0 else '' }{row["GD"]}</td>
+                        <td style="padding: 10px 12px; text-align: center; font-weight: bold; color: #34D399; background: rgba(16, 185, 129, 0.05);">{row["PTS"]}</td>
+                      </tr>
+                    """
+                    
+                group_table_html += """
+                    </tbody>
+                  </table>
+                </div>
+                """
+                st.markdown(group_table_html, unsafe_allow_html=True)
                 
             # Render best third places dynamic ranking below
             st.markdown("##### 🏆 Tabla Comparativa de Terceros Lugares")
@@ -901,19 +951,16 @@ if page == "🏆 Tablero Principal":
                 t_id = t_stats["id"]
                 t_name = t_stats["name"]
                 g_name = t_stats["group_name"]
-                
-                # Check status
                 status, elim_round = team_status_map.get(t_id, ("Vivo", "N/A"))
-                
-                # Indicator if they are qualified
                 is_qualified = t_id in best_thirds_ids
                 qual_emoji = "✅" if is_qualified else ("❌" if status == 'Eliminado' else "⏳")
+                
+                flag_t_name = TEAM_FLAGS.get(t_name, t_name)
                 
                 thirds_rows.append({
                     "Pos": idx,
                     "Grupo": f"Grupo {g_name}",
-                    "🚩": get_flag_url(t_name),
-                    "Equipo": f"{qual_emoji} {t_name}",
+                    "Equipo": f"{qual_emoji} {flag_t_name}",
                     "PJ": t_stats["pj"],
                     "PTS": t_stats["pts"],
                     "GD": t_stats["dif"],
@@ -922,23 +969,47 @@ if page == "🏆 Tablero Principal":
                 })
                 
             if thirds_rows:
-                df_thirds = pd.DataFrame(thirds_rows)
-                st.dataframe(
-                    df_thirds,
-                    column_config={
-                        "Pos": st.column_config.NumberColumn("Pos", width="small"),
-                        "Grupo": st.column_config.TextColumn("Grupo", width="small"),
-                        "🚩": st.column_config.ImageColumn(" ", width="small"),
-                        "Equipo": st.column_config.TextColumn("Equipo", width="medium"),
-                        "PJ": st.column_config.NumberColumn("PJ", width="small"),
-                        "PTS": st.column_config.NumberColumn("PTS", width="small"),
-                        "GD": st.column_config.NumberColumn("GD", width="small"),
-                        "GF": st.column_config.NumberColumn("GF", width="small"),
-                        "Estado": st.column_config.TextColumn("Estado", width="medium")
-                    },
-                    hide_index=True,
-                    use_container_width=True
-                )
+                thirds_table_html = """
+                <div style="overflow-x: auto; margin-top: 10px;">
+                  <table style="width: 100%; border-collapse: collapse; background: rgba(30, 41, 59, 0.25); border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,0.06); font-family: 'Outfit', sans-serif;">
+                    <thead>
+                      <tr style="background: rgba(15, 23, 42, 0.7); border-bottom: 1px solid rgba(255,255,255,0.08); color: #94A3B8; text-align: left; font-size: 0.9rem;">
+                        <th style="padding: 10px 12px; font-weight: 600; text-align: center; width: 40px;">Pos</th>
+                        <th style="padding: 10px 12px; font-weight: 600;">Grupo</th>
+                        <th style="padding: 10px 12px; font-weight: 600;">Equipo</th>
+                        <th style="padding: 10px 12px; font-weight: 600; text-align: center;">PJ</th>
+                        <th style="padding: 10px 12px; font-weight: 600; text-align: center; color: #34D399;">PTS</th>
+                        <th style="padding: 10px 12px; font-weight: 600; text-align: center;">GD</th>
+                        <th style="padding: 10px 12px; font-weight: 600; text-align: center;">GF</th>
+                        <th style="padding: 10px 12px; font-weight: 600; text-align: center;">Estado</th>
+                      </tr>
+                    </thead>
+                    <tbody style="color: #E2E8F0; font-size: 0.9rem;">
+                """
+                
+                for row in thirds_rows:
+                    qual_bg = "background: rgba(16, 185, 129, 0.08);" if row["Estado"] == "Clasificado" else ("background: rgba(239, 68, 68, 0.04);" if row["Estado"] == "Eliminado" else "")
+                    qual_color = "color: #34D399; font-weight: bold;" if row["Estado"] == "Clasificado" else ("color: #F87171; text-decoration: line-through; opacity: 0.7;" if row["Estado"] == "Eliminado" else "color: #94A3B8; font-style: italic;")
+                    
+                    thirds_table_html += f"""
+                      <tr style="border-bottom: 1px solid rgba(255,255,255,0.04); transition: background 0.2s; {qual_bg}" onmouseover="this.style.background='rgba(255,255,255,0.02)'" onmouseout="this.style.background='transparent'">
+                        <td style="padding: 10px 12px; text-align: center; font-weight: 600; color: #94A3B8;">{row["Pos"]}</td>
+                        <td style="padding: 10px 12px; font-weight: 600;">{row["Grupo"]}</td>
+                        <td style="padding: 10px 12px; font-weight: 600; color: #FFFFFF;">{row["Equipo"]}</td>
+                        <td style="padding: 10px 12px; text-align: center;">{row["PJ"]}</td>
+                        <td style="padding: 10px 12px; text-align: center; font-weight: bold; color: #34D399;">{row["PTS"]}</td>
+                        <td style="padding: 10px 12px; text-align: center; font-weight: 600; color: { '#34D399' if row['GD'] > 0 else ('#F87171' if row['GD'] < 0 else '#94A3B8') };">{ '+' if row['GD'] > 0 else '' }{row["GD"]}</td>
+                        <td style="padding: 10px 12px; text-align: center;">{row["GF"]}</td>
+                        <td style="padding: 10px 12px; text-align: center; {qual_color}">{row["Estado"]}</td>
+                      </tr>
+                    """
+                    
+                thirds_table_html += """
+                    </tbody>
+                  </table>
+                </div>
+                """
+                st.markdown(thirds_table_html, unsafe_allow_html=True)
             else:
                 st.info("Aún no se han jugado suficientes partidos para calcular los terceros lugares.")
                 
