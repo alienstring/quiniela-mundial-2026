@@ -32,17 +32,58 @@ custom_css = """
         display: none !important;
     }
     
-    /* Mover los controles nativos de la barra lateral fuera de la pantalla (pero dejándolos activos en el DOM para clics de JS) */
-    [data-testid="collapsedControl"],
+    /* Estilizar el botón nativo de Streamlit como un botón flotante circular de oro premium */
     [data-testid="stSidebarCollapseButton"],
-    .stSidebarCollapseButton {
+    [data-testid="collapsedControl"],
+    button[aria-label="Expand sidebar"],
+    button[aria-label="Collapse sidebar"],
+    button[aria-label="Close sidebar"] {
+        display: flex !important;
+        background-color: #1E293B !important;
+        border-radius: 50% !important;
+        border: 2px solid rgba(255, 215, 0, 0.6) !important;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.5) !important;
         position: fixed !important;
-        left: -999px !important;
-        top: -999px !important;
-        width: 1px !important;
-        height: 1px !important;
-        opacity: 0 !important;
-        pointer-events: auto !important;
+        left: 20px !important;
+        top: 20px !important;
+        z-index: 999999 !important;
+        width: 48px !important;
+        height: 48px !important;
+        align-items: center !important;
+        justify-content: center !important;
+        transition: all 0.3s ease !important;
+        cursor: pointer !important;
+    }
+    
+    [data-testid="stSidebarCollapseButton"]:hover,
+    [data-testid="collapsedControl"]:hover,
+    button[aria-label="Expand sidebar"]:hover,
+    button[aria-label="Collapse sidebar"]:hover {
+        transform: scale(1.1) !important;
+        background-color: #0F172A !important;
+        border-color: rgba(255, 215, 0, 0.9) !important;
+    }
+    
+    [data-testid="stSidebarCollapseButton"] button,
+    [data-testid="collapsedControl"] button {
+        background: transparent !important;
+        border: none !important;
+        width: 100% !important;
+        height: 100% !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        color: #FFD700 !important;
+    }
+    
+    [data-testid="stSidebarCollapseButton"] svg,
+    [data-testid="collapsedControl"] svg,
+    button[aria-label="Expand sidebar"] svg,
+    button[aria-label="Collapse sidebar"] svg {
+        fill: #FFD700 !important;
+        color: #FFD700 !important;
+        width: 26px !important;
+        height: 26px !important;
     }
     
     [data-testid="stDecoration"] {
@@ -220,65 +261,6 @@ custom_css = """
         box-shadow: 0 4px 10px rgba(0,0,0,0.2);
     }
 </style>
-<div id="custom-sidebar-toggle" onclick="
-    let selectors = [
-        '[data-testid=\'stSidebarCollapseButton\']',
-        '[data-testid=\'collapsedControl\'] button',
-        '[data-testid=\'collapsedControl\']',
-        '.stSidebarCollapseButton',
-        'button[aria-label=\'Expand sidebar\']',
-        'button[aria-label=\'Collapse sidebar\']',
-        'button[aria-label=\'Close sidebar\']',
-        '.st-emotion-cache-15x5g63',
-        '.st-emotion-cache-1h9z78m',
-        '.st-emotion-cache-1wfux4e',
-        '.st-emotion-cache-1d9g9g8'
-    ];
-    let clicked = false;
-    for (let sel of selectors) {
-        let el = document.querySelector(sel);
-        if (el) {
-            try { el.click(); } catch(e) {}
-            try { el.dispatchEvent(new MouseEvent('click', {view: window, bubbles: true, cancelable: true})); } catch(e) {}
-            clicked = true;
-            break;
-        }
-    }
-    if (!clicked) {
-        let buttons = document.querySelectorAll('button');
-        for (let btn of buttons) {
-            let label = (btn.getAttribute('aria-label') || '').toLowerCase();
-            let html = btn.innerHTML.toLowerCase();
-            if (label.includes('sidebar') || label.includes('barra') || label.includes('menú') || label.includes('menu') || html.includes('chevron') || btn.querySelector('svg')) {
-                if (btn.id !== 'custom-sidebar-toggle' && !btn.closest('#custom-sidebar-toggle')) {
-                    try { btn.click(); } catch(e) {}
-                    try { btn.dispatchEvent(new MouseEvent('click', {view: window, bubbles: true, cancelable: true})); } catch(e) {}
-                    break;
-                }
-            }
-        }
-    }
-" style="
-    position: fixed;
-    left: 20px;
-    top: 20px;
-    width: 48px;
-    height: 48px;
-    background-color: #1E293B;
-    border: 2px solid rgba(255, 215, 0, 0.7);
-    border-radius: 50%;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.6);
-    z-index: 99999999;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.3s ease;
-" onmouseover="this.style.transform='scale(1.1)'; this.style.borderColor='rgba(255, 215, 0, 0.9)';" onmouseout="this.style.transform='scale(1)'; this.style.borderColor='rgba(255, 215, 0, 0.7)';">
-    <svg viewBox="0 0 24 24" style="width: 24px; height: 24px; fill: #FFD700; display: block;">
-        <path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z"/>
-    </svg>
-</div>
 """
 st.markdown(custom_css, unsafe_allow_html=True)
 
