@@ -18,6 +18,12 @@ custom_css = """
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap');
     
+    /* Force scrolling and height in WebView embed mode */
+    html, body, [data-testid="stAppViewContainer"], .stApp {
+        overflow: auto !important;
+        height: auto !important;
+    }
+    
     html, body, [data-testid="stSidebar"] {
         font-family: 'Outfit', sans-serif;
     }
