@@ -18,10 +18,15 @@ custom_css = """
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap');
     
-    /* Force scrolling and height in WebView embed mode */
-    html, body, [data-testid="stAppViewContainer"], .stApp {
-        overflow: auto !important;
-        height: auto !important;
+    /* Ocultar cabeceras, decoración y pie de página de Streamlit para un aspecto nativo */
+    [data-testid="stHeader"] {
+        display: none !important;
+    }
+    [data-testid="stDecoration"] {
+        display: none !important;
+    }
+    footer {
+        display: none !important;
     }
     
     html, body, [data-testid="stSidebar"] {
@@ -395,8 +400,8 @@ except Exception:
     third_place_name = None
 
 # Sidebar Navigation
-st.sidebar.image("https://upload.wikimedia.org/wikipedia/commons/a/a7/2026_FIFA_World_Cup_Logo.svg", width=120)
-st.sidebar.markdown("<h2 style='text-align: center; color: white;'>Menú de Opciones</h2>", unsafe_allow_html=True)
+st.sidebar.markdown("<div style='text-align: center; font-size: 5rem; margin-bottom: 10px; margin-top: -20px;'>🏆</div>", unsafe_allow_html=True)
+st.sidebar.markdown("<h2 style='text-align: center; color: white; margin-top: 0px;'>Menú de Opciones</h2>", unsafe_allow_html=True)
 
 # Initialize session state for admin login
 if "admin_logged_in" not in st.session_state:
