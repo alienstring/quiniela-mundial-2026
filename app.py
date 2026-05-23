@@ -37,22 +37,42 @@ custom_css = """
         display: flex !important;
         background-color: #1E293B !important;
         border-radius: 50% !important;
-        border: 1px solid rgba(255,255,255,0.15) !important;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.4) !important;
+        border: 2px solid rgba(255, 215, 0, 0.4) !important;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.5) !important;
         position: fixed !important;
         left: 20px !important;
         top: 20px !important;
         z-index: 999999 !important;
-        width: 42px !important;
-        height: 42px !important;
+        width: 48px !important;
+        height: 48px !important;
         align-items: center !important;
         justify-content: center !important;
         transition: all 0.3s ease !important;
+        cursor: pointer !important;
     }
     
     [data-testid="collapsedControl"]:hover {
         transform: scale(1.1) !important;
         background-color: #0F172A !important;
+        border-color: rgba(255, 215, 0, 0.8) !important;
+    }
+    
+    [data-testid="collapsedControl"] button {
+        background: transparent !important;
+        border: none !important;
+        width: 100% !important;
+        height: 100% !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        color: #FFD700 !important;
+    }
+    
+    [data-testid="collapsedControl"] svg {
+        fill: #FFD700 !important;
+        color: #FFD700 !important;
+        width: 28px !important;
+        height: 28px !important;
     }
     
     [data-testid="stDecoration"] {
