@@ -29,6 +29,17 @@ custom_css = """
         display: none !important;
     }
     
+    /* Forzar modo oscuro premium en toda la app, previniendo temas claros del celular */
+    html, body, [data-testid="stAppViewContainer"], .stApp {
+        background-color: #0E1117 !important;
+        color: #F8FAFC !important;
+    }
+    
+    [data-testid="stSidebar"] {
+        background-color: #1E293B !important;
+        color: #F8FAFC !important;
+    }
+    
     html, body, [data-testid="stSidebar"] {
         font-family: 'Outfit', sans-serif;
     }
