@@ -1,4 +1,5 @@
 import streamlit as st
+import streamlit.components.v1 as components
 import pandas as pd
 import time
 import os
@@ -19,71 +20,20 @@ custom_css = """
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap');
     
-    /* Ocultar barra superior y decoración de Streamlit, pero mantener el contenedor transparente */
-    [data-testid="stHeader"] {
-        background-color: transparent !important;
-        background: transparent !important;
-        box-shadow: none !important;
-        border: none !important;
-    }
-    
-    /* Ocultar solo el menú de tres puntos y deploy de Streamlit en la cabecera */
-    [data-testid="stHeader"] > div:first-child > div:first-child > div:nth-child(2) {
+    /* Ocultar completamente el header nativo de Streamlit y sus botones en todos los dispositivos */
+    header, [data-testid="stHeader"] {
         display: none !important;
+        visibility: hidden !important;
+        height: 0 !important;
+        min-height: 0 !important;
+        overflow: hidden !important;
     }
-    
-    /* Estilizar el botón nativo de Streamlit como un botón flotante circular de oro premium */
+
+    /* Ocultar el control colapsado nativo de Streamlit (lo reemplazamos con nuestro botón custom) */
     [data-testid="stSidebarCollapseButton"],
-    [data-testid="collapsedControl"],
-    button[aria-label="Expand sidebar"],
-    button[aria-label="Collapse sidebar"],
-    button[aria-label="Close sidebar"] {
-        display: flex !important;
-        background-color: #1E293B !important;
-        border-radius: 50% !important;
-        border: 2px solid rgba(255, 215, 0, 0.6) !important;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.5) !important;
-        position: fixed !important;
-        left: 20px !important;
-        top: 20px !important;
-        z-index: 999999 !important;
-        width: 48px !important;
-        height: 48px !important;
-        align-items: center !important;
-        justify-content: center !important;
-        transition: all 0.3s ease !important;
-        cursor: pointer !important;
-    }
-    
-    [data-testid="stSidebarCollapseButton"]:hover,
-    [data-testid="collapsedControl"]:hover,
-    button[aria-label="Expand sidebar"]:hover,
-    button[aria-label="Collapse sidebar"]:hover {
-        transform: scale(1.1) !important;
-        background-color: #0F172A !important;
-        border-color: rgba(255, 215, 0, 0.9) !important;
-    }
-    
-    [data-testid="stSidebarCollapseButton"] button,
-    [data-testid="collapsedControl"] button {
-        background: transparent !important;
-        border: none !important;
-        width: 100% !important;
-        height: 100% !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        color: #FFD700 !important;
-    }
-    
-    [data-testid="stSidebarCollapseButton"] svg,
-    [data-testid="collapsedControl"] svg,
-    button[aria-label="Expand sidebar"] svg,
-    button[aria-label="Collapse sidebar"] svg {
-        fill: #FFD700 !important;
-        color: #FFD700 !important;
-        width: 26px !important;
-        height: 26px !important;
+    [data-testid="collapsedControl"] {
+        display: none !important;
+        visibility: hidden !important;
     }
     
     [data-testid="stDecoration"] {
@@ -263,6 +213,129 @@ custom_css = """
 </style>
 """
 st.markdown(custom_css, unsafe_allow_html=True)
+
+# Inyectar botón flotante real en el body del documento usando st.components
+components.html("""
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  body { margin: 0; padding: 0; background: transparent; overflow: hidden; }
+</style>
+</head>
+<body>
+<script>
+(function() {
+  // Función que inyecta el botón flotante en el documento padre
+  function injectFAB() {
+    var parentDoc = window.parent.document;
+    
+    // Evitar duplicados
+    if (parentDoc.getElementById('custom-fab-menu')) return;
+    
+    // Crear el botón flotante
+    var fab = parentDoc.createElement('button');
+    fab.id = 'custom-fab-menu';
+    fab.innerHTML = '&#9776;';
+    fab.setAttribute('aria-label', 'Abrir menú de usuario');
+    fab.setAttribute('title', 'Menú / Cambiar usuario');
+    
+    // Estilos del botón
+    fab.style.cssText = [
+      'position: fixed',
+      'left: 16px',
+      'top: 16px',
+      'z-index: 2147483647',
+      'width: 52px',
+      'height: 52px',
+      'border-radius: 50%',
+      'background: linear-gradient(135deg, #1E293B 0%, #0F172A 100%)',
+      'border: 2px solid rgba(255, 215, 0, 0.7)',
+      'box-shadow: 0 4px 20px rgba(0,0,0,0.6), 0 0 0 0 rgba(255,215,0,0.4)',
+      'color: #FFD700',
+      'font-size: 22px',
+      'cursor: pointer',
+      'display: flex',
+      'align-items: center',
+      'justify-content: center',
+      'transition: all 0.2s ease',
+      'outline: none',
+      '-webkit-tap-highlight-color: transparent',
+      'touch-action: manipulation'
+    ].join(' !important; ') + ' !important;';
+    
+    // Efecto hover/touch
+    fab.addEventListener('mouseenter', function() {
+      fab.style.transform = 'scale(1.12)';
+      fab.style.borderColor = '#FFD700';
+      fab.style.boxShadow = '0 6px 25px rgba(0,0,0,0.7), 0 0 15px rgba(255,215,0,0.3)';
+    });
+    fab.addEventListener('mouseleave', function() {
+      fab.style.transform = 'scale(1)';
+      fab.style.borderColor = 'rgba(255, 215, 0, 0.7)';
+      fab.style.boxShadow = '0 4px 20px rgba(0,0,0,0.6)';
+    });
+    
+    // Click: buscar y hacer click en el botón nativo de Streamlit para abrir/cerrar sidebar
+    fab.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      
+      // Intentar múltiples selectores del botón nativo de Streamlit
+      var selectors = [
+        '[data-testid="collapsedControl"] button',
+        '[data-testid="stSidebarCollapseButton"] button',
+        'button[aria-label="Expand sidebar"]',
+        'button[aria-label="Collapse sidebar"]',
+        'button[aria-label="Open sidebar"]',
+        '[data-testid="collapsedControl"]',
+        '[data-testid="stSidebarCollapseButton"]'
+      ];
+      
+      var found = false;
+      for (var i = 0; i < selectors.length; i++) {
+        var btn = parentDoc.querySelector(selectors[i]);
+        if (btn) {
+          btn.click();
+          found = true;
+          break;
+        }
+      }
+      
+      // Si no encontró el botón nativo, toggle manual de la sidebar
+      if (!found) {
+        var sidebar = parentDoc.querySelector('[data-testid="stSidebar"]');
+        if (sidebar) {
+          var isHidden = sidebar.style.display === 'none' || 
+                         sidebar.getAttribute('aria-expanded') === 'false' ||
+                         sidebar.style.width === '0px' ||
+                         sidebar.offsetWidth < 10;
+          if (isHidden) {
+            sidebar.style.display = 'block';
+            sidebar.style.transform = 'translateX(0)';
+            sidebar.style.width = '';
+          } else {
+            sidebar.style.transform = 'translateX(-100%)';
+            setTimeout(function() { sidebar.style.display = 'none'; }, 300);
+          }
+        }
+      }
+    });
+    
+    // Agregar al body del padre
+    parentDoc.body.appendChild(fab);
+  }
+  
+  // Intentar inmediatamente y también después de un delay para asegurar que el DOM esté listo
+  try { injectFAB(); } catch(e) {}
+  setTimeout(function() { try { injectFAB(); } catch(e) {} }, 500);
+  setTimeout(function() { try { injectFAB(); } catch(e) {} }, 1500);
+  setTimeout(function() { try { injectFAB(); } catch(e) {} }, 3000);
+})();
+</script>
+</body>
+</html>
+""", height=0)
 
 # Map team names to flag emojis and display names
 TEAM_FLAGS = {
