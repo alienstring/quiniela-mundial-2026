@@ -612,13 +612,20 @@ page = st.sidebar.radio(
 
 # Header Banner
 st.markdown("""
-<div class="title-banner">
-    <h1 style="color: #FFD700; margin: 0; font-size: 2.8rem; font-weight: 800; letter-spacing: 1px;">
-        QUINIELA DE ELIMINATORIAS 2026
-    </h1>
-    <p style="color: #94A3B8; margin-top: 5px; font-size: 1.15rem; font-weight: 400;">
-        Fase final del Mundial FIFA 2026 - Intranet Local
-    </p>
+<div class="title-banner" style="padding: 18px 24px;">
+    <div style="display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap;">
+        <span style="font-size: 1.8rem;">⚽</span>
+        <div>
+            <div style="color: #FFD700; font-size: 1.5rem; font-weight: 800; letter-spacing: 2px; line-height: 1.2; text-shadow: 0 0 20px rgba(255,215,0,0.3);">
+                QUINIELA FIFA
+            </div>
+            <div style="color: #E2E8F0; font-size: 1.1rem; font-weight: 300; letter-spacing: 6px; line-height: 1.2;">
+                MUNDIAL 2026
+            </div>
+        </div>
+        <span style="font-size: 1.8rem;">🏆</span>
+    </div>
+    <div style="width: 60px; height: 2px; background: linear-gradient(90deg, transparent, #FFD700, transparent); margin: 10px auto 0;"></div>
 </div>
 """, unsafe_allow_html=True)
 
