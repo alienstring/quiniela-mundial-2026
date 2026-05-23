@@ -30,7 +30,7 @@ custom_css = """
     }
     
     /* Forzar modo oscuro premium en toda la app, previniendo temas claros del celular */
-    html, body, [data-testid="stAppViewContainer"], .stApp {
+    html, body, [data-testid="stAppViewContainer"], .stApp, .main, [data-testid="stMain"] {
         background-color: #0E1117 !important;
         color: #F8FAFC !important;
     }
