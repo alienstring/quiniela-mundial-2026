@@ -25,8 +25,6 @@ custom_css = """
         background: transparent !important;
         box-shadow: none !important;
         border: none !important;
-        height: 0px !important;
-        min-height: 0px !important;
     }
     
     /* Ocultar solo el menú de tres puntos y deploy de Streamlit en la cabecera */
@@ -648,19 +646,19 @@ if page == "🏆 Tablero Principal":
             sorted_rows = sorted(rows, key=get_sort_order)
             
             table_html = """
-            <div style="overflow-x: auto; margin-top: 15px;">
-              <table style="width: 100%; border-collapse: collapse; background: rgba(30, 41, 59, 0.25); border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,0.06); font-family: 'Outfit', sans-serif;">
-                <thead>
-                  <tr style="background: rgba(15, 23, 42, 0.7); border-bottom: 1px solid rgba(255,255,255,0.08); color: #94A3B8; text-align: left; font-size: 0.95rem;">
-                    <th style="padding: 14px 16px; font-weight: 600;">Participante</th>
-                    <th style="padding: 14px 16px; font-weight: 600;">Selección 1</th>
-                    <th style="padding: 14px 16px; font-weight: 600;">Selección 2</th>
-                    <th style="padding: 14px 16px; font-weight: 600;">Estado</th>
-                    <th style="padding: 14px 16px; font-weight: 600;">Premio / Situación</th>
-                  </tr>
-                </thead>
-                <tbody style="color: #E2E8F0; font-size: 0.95rem;">
-            """
+<div style="overflow-x: auto; margin-top: 15px;">
+  <table style="width: 100%; border-collapse: collapse; background: rgba(30, 41, 59, 0.25); border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,0.06); font-family: 'Outfit', sans-serif;">
+    <thead>
+      <tr style="background: rgba(15, 23, 42, 0.7); border-bottom: 1px solid rgba(255,255,255,0.08); color: #94A3B8; text-align: left; font-size: 0.95rem;">
+        <th style="padding: 14px 16px; font-weight: 600;">Participante</th>
+        <th style="padding: 14px 16px; font-weight: 600;">Selección 1</th>
+        <th style="padding: 14px 16px; font-weight: 600;">Selección 2</th>
+        <th style="padding: 14px 16px; font-weight: 600;">Estado</th>
+        <th style="padding: 14px 16px; font-weight: 600;">Premio / Situación</th>
+      </tr>
+    </thead>
+    <tbody style="color: #E2E8F0; font-size: 0.95rem;">
+"""
             
             for row in sorted_rows:
                 status_style = ""
@@ -676,21 +674,21 @@ if page == "🏆 Tablero Principal":
                     status_style = "color: #64748B; opacity: 0.8;"
                     
                 table_html += f"""
-                  <tr style="border-bottom: 1px solid rgba(255,255,255,0.04); transition: background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.02)'" onmouseout="this.style.background='transparent'">
-                    <td style="padding: 14px 16px; font-weight: 600; color: #FFFFFF;">{row["Participante"]}</td>
-                    <td style="padding: 14px 16px;">{row["Equipo 1"]}</td>
-                    <td style="padding: 14px 16px;">{row["Equipo 2"]}</td>
-                    <td style="padding: 14px 16px; {status_style}">{row["Estado del Jugador"]}</td>
-                    <td style="padding: 14px 16px; color: #94A3B8;">{row["Premio / Situación"]}</td>
-                  </tr>
-                """
+<tr style="border-bottom: 1px solid rgba(255,255,255,0.04); transition: background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.02)'" onmouseout="this.style.background='transparent'">
+  <td style="padding: 14px 16px; font-weight: 600; color: #FFFFFF;">{row["Participante"]}</td>
+  <td style="padding: 14px 16px;">{row["Equipo 1"]}</td>
+  <td style="padding: 14px 16px;">{row["Equipo 2"]}</td>
+  <td style="padding: 14px 16px; {status_style}">{row["Estado del Jugador"]}</td>
+  <td style="padding: 14px 16px; color: #94A3B8;">{row["Premio / Situación"]}</td>
+</tr>
+"""
                 
             table_html += """
-                </tbody>
-              </table>
-            </div>
-            """
-            st.markdown(textwrap.dedent(table_html), unsafe_allow_html=True)
+  </tbody>
+</table>
+</div>
+"""
+            st.markdown(table_html, unsafe_allow_html=True)
             
     # Tab 2: Elimination Bracket Tree
     with tab_bracket_view:
@@ -935,47 +933,47 @@ if page == "🏆 Tablero Principal":
                     })
                     
                 group_table_html = """
-                <div style="overflow-x: auto; margin-top: 10px;">
-                  <table style="width: 100%; border-collapse: collapse; background: rgba(30, 41, 59, 0.25); border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,0.06); font-family: 'Outfit', sans-serif;">
-                    <thead>
-                      <tr style="background: rgba(15, 23, 42, 0.7); border-bottom: 1px solid rgba(255,255,255,0.08); color: #94A3B8; text-align: left; font-size: 0.9rem;">
-                        <th style="padding: 10px 12px; font-weight: 600; text-align: center; width: 40px;">Pos</th>
-                        <th style="padding: 10px 12px; font-weight: 600;">Equipo</th>
-                        <th style="padding: 10px 12px; font-weight: 600; text-align: center;">PJ</th>
-                        <th style="padding: 10px 12px; font-weight: 600; text-align: center;">G</th>
-                        <th style="padding: 10px 12px; font-weight: 600; text-align: center;">E</th>
-                        <th style="padding: 10px 12px; font-weight: 600; text-align: center;">P</th>
-                        <th style="padding: 10px 12px; font-weight: 600; text-align: center;">GF</th>
-                        <th style="padding: 10px 12px; font-weight: 600; text-align: center;">GC</th>
-                        <th style="padding: 10px 12px; font-weight: 600; text-align: center;">GD</th>
-                        <th style="padding: 10px 12px; font-weight: 600; text-align: center; color: #34D399;">PTS</th>
-                      </tr>
-                    </thead>
-                    <tbody style="color: #E2E8F0; font-size: 0.9rem;">
-                """
+<div style="overflow-x: auto; margin-top: 10px;">
+  <table style="width: 100%; border-collapse: collapse; background: rgba(30, 41, 59, 0.25); border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,0.06); font-family: 'Outfit', sans-serif;">
+    <thead>
+      <tr style="background: rgba(15, 23, 42, 0.7); border-bottom: 1px solid rgba(255,255,255,0.08); color: #94A3B8; text-align: left; font-size: 0.9rem;">
+        <th style="padding: 10px 12px; font-weight: 600; text-align: center; width: 40px;">Pos</th>
+        <th style="padding: 10px 12px; font-weight: 600;">Equipo</th>
+        <th style="padding: 10px 12px; font-weight: 600; text-align: center;">PJ</th>
+        <th style="padding: 10px 12px; font-weight: 600; text-align: center;">G</th>
+        <th style="padding: 10px 12px; font-weight: 600; text-align: center;">E</th>
+        <th style="padding: 10px 12px; font-weight: 600; text-align: center;">P</th>
+        <th style="padding: 10px 12px; font-weight: 600; text-align: center;">GF</th>
+        <th style="padding: 10px 12px; font-weight: 600; text-align: center;">GC</th>
+        <th style="padding: 10px 12px; font-weight: 600; text-align: center;">GD</th>
+        <th style="padding: 10px 12px; font-weight: 600; text-align: center; color: #34D399;">PTS</th>
+      </tr>
+    </thead>
+    <tbody style="color: #E2E8F0; font-size: 0.9rem;">
+"""
                 
                 for row in table_rows:
                     group_table_html += f"""
-                      <tr style="border-bottom: 1px solid rgba(255,255,255,0.04); transition: background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.02)'" onmouseout="this.style.background='transparent'">
-                        <td style="padding: 10px 12px; text-align: center; font-weight: 600; color: #94A3B8;">{row["Pos"]}</td>
-                        <td style="padding: 10px 12px; font-weight: 600; color: #FFFFFF;">{row["Equipo"]}</td>
-                        <td style="padding: 10px 12px; text-align: center;">{row["PJ"]}</td>
-                        <td style="padding: 10px 12px; text-align: center;">{row["PG"]}</td>
-                        <td style="padding: 10px 12px; text-align: center;">{row["PE"]}</td>
-                        <td style="padding: 10px 12px; text-align: center;">{row["PP"]}</td>
-                        <td style="padding: 10px 12px; text-align: center;">{row["GF"]}</td>
-                        <td style="padding: 10px 12px; text-align: center;">{row["GC"]}</td>
-                        <td style="padding: 10px 12px; text-align: center; font-weight: 600; color: { '#34D399' if row['GD'] > 0 else ('#F87171' if row['GD'] < 0 else '#94A3B8') };">{ '+' if row['GD'] > 0 else '' }{row["GD"]}</td>
-                        <td style="padding: 10px 12px; text-align: center; font-weight: bold; color: #34D399; background: rgba(16, 185, 129, 0.05);">{row["PTS"]}</td>
-                      </tr>
-                    """
+<tr style="border-bottom: 1px solid rgba(255,255,255,0.04); transition: background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.02)'" onmouseout="this.style.background='transparent'">
+  <td style="padding: 10px 12px; text-align: center; font-weight: 600; color: #94A3B8;">{row["Pos"]}</td>
+  <td style="padding: 10px 12px; font-weight: 600; color: #FFFFFF;">{row["Equipo"]}</td>
+  <td style="padding: 10px 12px; text-align: center;">{row["PJ"]}</td>
+  <td style="padding: 10px 12px; text-align: center;">{row["PG"]}</td>
+  <td style="padding: 10px 12px; text-align: center;">{row["PE"]}</td>
+  <td style="padding: 10px 12px; text-align: center;">{row["PP"]}</td>
+  <td style="padding: 10px 12px; text-align: center;">{row["GF"]}</td>
+  <td style="padding: 10px 12px; text-align: center;">{row["GC"]}</td>
+  <td style="padding: 10px 12px; text-align: center; font-weight: 600; color: { '#34D399' if row['GD'] > 0 else ('#F87171' if row['GD'] < 0 else '#94A3B8') };">{ '+' if row['GD'] > 0 else '' }{row["GD"]}</td>
+  <td style="padding: 10px 12px; text-align: center; font-weight: bold; color: #34D399; background: rgba(16, 185, 129, 0.05);">{row["PTS"]}</td>
+</tr>
+"""
                     
                 group_table_html += """
-                    </tbody>
-                  </table>
-                </div>
-                """
-                st.markdown(textwrap.dedent(group_table_html), unsafe_allow_html=True)
+  </tbody>
+</table>
+</div>
+"""
+                st.markdown(group_table_html, unsafe_allow_html=True)
                 
             # Render best third places dynamic ranking below
             st.markdown("##### 🏆 Tabla Comparativa de Terceros Lugares")
@@ -1017,46 +1015,46 @@ if page == "🏆 Tablero Principal":
                 
             if thirds_rows:
                 thirds_table_html = """
-                <div style="overflow-x: auto; margin-top: 10px;">
-                  <table style="width: 100%; border-collapse: collapse; background: rgba(30, 41, 59, 0.25); border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,0.06); font-family: 'Outfit', sans-serif;">
-                    <thead>
-                      <tr style="background: rgba(15, 23, 42, 0.7); border-bottom: 1px solid rgba(255,255,255,0.08); color: #94A3B8; text-align: left; font-size: 0.9rem;">
-                        <th style="padding: 10px 12px; font-weight: 600; text-align: center; width: 40px;">Pos</th>
-                        <th style="padding: 10px 12px; font-weight: 600;">Grupo</th>
-                        <th style="padding: 10px 12px; font-weight: 600;">Equipo</th>
-                        <th style="padding: 10px 12px; font-weight: 600; text-align: center;">PJ</th>
-                        <th style="padding: 10px 12px; font-weight: 600; text-align: center; color: #34D399;">PTS</th>
-                        <th style="padding: 10px 12px; font-weight: 600; text-align: center;">GD</th>
-                        <th style="padding: 10px 12px; font-weight: 600; text-align: center;">GF</th>
-                        <th style="padding: 10px 12px; font-weight: 600; text-align: center;">Estado</th>
-                      </tr>
-                    </thead>
-                    <tbody style="color: #E2E8F0; font-size: 0.9rem;">
-                """
+<div style="overflow-x: auto; margin-top: 10px;">
+  <table style="width: 100%; border-collapse: collapse; background: rgba(30, 41, 59, 0.25); border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,0.06); font-family: 'Outfit', sans-serif;">
+    <thead>
+      <tr style="background: rgba(15, 23, 42, 0.7); border-bottom: 1px solid rgba(255,255,255,0.08); color: #94A3B8; text-align: left; font-size: 0.9rem;">
+        <th style="padding: 10px 12px; font-weight: 600; text-align: center; width: 40px;">Pos</th>
+        <th style="padding: 10px 12px; font-weight: 600;">Grupo</th>
+        <th style="padding: 10px 12px; font-weight: 600;">Equipo</th>
+        <th style="padding: 10px 12px; text-align: center;">PJ</th>
+        <th style="padding: 10px 12px; font-weight: 600; text-align: center; color: #34D399;">PTS</th>
+        <th style="padding: 10px 12px; text-align: center;">GD</th>
+        <th style="padding: 10px 12px; text-align: center;">GF</th>
+        <th style="padding: 10px 12px; font-weight: 600; text-align: center;">Estado</th>
+      </tr>
+    </thead>
+    <tbody style="color: #E2E8F0; font-size: 0.9rem;">
+"""
                 
                 for row in thirds_rows:
                     qual_bg = "background: rgba(16, 185, 129, 0.08);" if row["Estado"] == "Clasificado" else ("background: rgba(239, 68, 68, 0.04);" if row["Estado"] == "Eliminado" else "")
                     qual_color = "color: #34D399; font-weight: bold;" if row["Estado"] == "Clasificado" else ("color: #F87171; text-decoration: line-through; opacity: 0.7;" if row["Estado"] == "Eliminado" else "color: #94A3B8; font-style: italic;")
                     
                     thirds_table_html += f"""
-                      <tr style="border-bottom: 1px solid rgba(255,255,255,0.04); transition: background 0.2s; {qual_bg}" onmouseover="this.style.background='rgba(255,255,255,0.02)'" onmouseout="this.style.background='transparent'">
-                        <td style="padding: 10px 12px; text-align: center; font-weight: 600; color: #94A3B8;">{row["Pos"]}</td>
-                        <td style="padding: 10px 12px; font-weight: 600;">{row["Grupo"]}</td>
-                        <td style="padding: 10px 12px; font-weight: 600; color: #FFFFFF;">{row["Equipo"]}</td>
-                        <td style="padding: 10px 12px; text-align: center;">{row["PJ"]}</td>
-                        <td style="padding: 10px 12px; text-align: center; font-weight: bold; color: #34D399;">{row["PTS"]}</td>
-                        <td style="padding: 10px 12px; text-align: center; font-weight: 600; color: { '#34D399' if row['GD'] > 0 else ('#F87171' if row['GD'] < 0 else '#94A3B8') };">{ '+' if row['GD'] > 0 else '' }{row["GD"]}</td>
-                        <td style="padding: 10px 12px; text-align: center;">{row["GF"]}</td>
-                        <td style="padding: 10px 12px; text-align: center; {qual_color}">{row["Estado"]}</td>
-                      </tr>
-                    """
+<tr style="border-bottom: 1px solid rgba(255,255,255,0.04); transition: background 0.2s; {qual_bg}" onmouseover="this.style.background='rgba(255,255,255,0.02)'" onmouseout="this.style.background='transparent'">
+  <td style="padding: 10px 12px; text-align: center; font-weight: 600; color: #94A3B8;">{row["Pos"]}</td>
+  <td style="padding: 10px 12px; font-weight: 600;">{row["Grupo"]}</td>
+  <td style="padding: 10px 12px; font-weight: 600; color: #FFFFFF;">{row["Equipo"]}</td>
+  <td style="padding: 10px 12px; text-align: center;">{row["PJ"]}</td>
+  <td style="padding: 10px 12px; text-align: center; font-weight: bold; color: #34D399;">{row["PTS"]}</td>
+  <td style="padding: 10px 12px; text-align: center; font-weight: 600; color: { '#34D399' if row['GD'] > 0 else ('#F87171' if row['GD'] < 0 else '#94A3B8') };">{ '+' if row['GD'] > 0 else '' }{row["GD"]}</td>
+  <td style="padding: 10px 12px; text-align: center;">{row["GF"]}</td>
+  <td style="padding: 10px 12px; text-align: center; {qual_color}">{row["Estado"]}</td>
+</tr>
+"""
                     
                 thirds_table_html += """
-                    </tbody>
-                  </table>
-                </div>
-                """
-                st.markdown(textwrap.dedent(thirds_table_html), unsafe_allow_html=True)
+  </tbody>
+</table>
+</div>
+"""
+                st.markdown(thirds_table_html, unsafe_allow_html=True)
             else:
                 st.info("Aún no se han jugado suficientes partidos para calcular los terceros lugares.")
                 
