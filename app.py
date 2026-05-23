@@ -4,6 +4,7 @@ import time
 import os
 import database as db
 import sync
+import textwrap
 
 # Page configuration
 st.set_page_config(
@@ -18,13 +19,48 @@ custom_css = """
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap');
     
-    /* Ocultar cabeceras, decoración y pie de página de Streamlit para un aspecto nativo */
+    /* Ocultar barra superior y decoración de Streamlit, pero mantener el contenedor transparente */
     [data-testid="stHeader"] {
+        background-color: transparent !important;
+        background: transparent !important;
+        box-shadow: none !important;
+        border: none !important;
+        height: 0px !important;
+        min-height: 0px !important;
+    }
+    
+    /* Ocultar solo el menú de tres puntos y deploy de Streamlit en la cabecera */
+    [data-testid="stHeader"] > div:first-child > div:first-child > div:nth-child(2) {
         display: none !important;
     }
+    
+    /* Botón flotante circular premium para reabrir el menú lateral (>>), visible siempre */
+    [data-testid="collapsedControl"] {
+        display: flex !important;
+        background-color: #1E293B !important;
+        border-radius: 50% !important;
+        border: 1px solid rgba(255,255,255,0.15) !important;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.4) !important;
+        position: fixed !important;
+        left: 20px !important;
+        top: 20px !important;
+        z-index: 999999 !important;
+        width: 42px !important;
+        height: 42px !important;
+        align-items: center !important;
+        justify-content: center !important;
+        transition: all 0.3s ease !important;
+    }
+    
+    [data-testid="collapsedControl"]:hover {
+        transform: scale(1.1) !important;
+        background-color: #0F172A !important;
+    }
+    
     [data-testid="stDecoration"] {
         display: none !important;
     }
+    
     footer {
         display: none !important;
     }
@@ -654,7 +690,7 @@ if page == "🏆 Tablero Principal":
               </table>
             </div>
             """
-            st.markdown(table_html, unsafe_allow_html=True)
+            st.markdown(textwrap.dedent(table_html), unsafe_allow_html=True)
             
     # Tab 2: Elimination Bracket Tree
     with tab_bracket_view:
@@ -939,7 +975,7 @@ if page == "🏆 Tablero Principal":
                   </table>
                 </div>
                 """
-                st.markdown(group_table_html, unsafe_allow_html=True)
+                st.markdown(textwrap.dedent(group_table_html), unsafe_allow_html=True)
                 
             # Render best third places dynamic ranking below
             st.markdown("##### 🏆 Tabla Comparativa de Terceros Lugares")
@@ -1020,7 +1056,7 @@ if page == "🏆 Tablero Principal":
                   </table>
                 </div>
                 """
-                st.markdown(thirds_table_html, unsafe_allow_html=True)
+                st.markdown(textwrap.dedent(thirds_table_html), unsafe_allow_html=True)
             else:
                 st.info("Aún no se han jugado suficientes partidos para calcular los terceros lugares.")
                 
